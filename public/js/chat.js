@@ -40,6 +40,8 @@ const autoscroll = () => {
     }
 }
 
+// Event List
+
 socket.on('message', (message) => {
     console.log(message);
     const html = Mustache.render(messageTemplate, {
@@ -68,6 +70,16 @@ socket.on('roomData', ({room, users}) => {
     });
     $sidebar.innerHTML = html;
 })
+
+// Emitted events
+socket.emit('join', username, room, (error) => {
+
+    if(error)
+    {
+        alert(`Error: ${error}`);
+        location.href = '/';
+    }
+});
 
 $messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -114,12 +126,3 @@ $locationButton.addEventListener('click', () => {
         console.log(error);
     })
 })
-
-socket.emit('join', username, room, (error) => {
-
-    if(error)
-    {
-        alert(`Error: ${error}`);
-        location.href = '/';
-    }
-});

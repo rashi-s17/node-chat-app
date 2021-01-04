@@ -12,11 +12,12 @@ const io = socketio(server);
 
 const port = process.env.PORT || 3000
 
-//Define paths for express config
+// Define paths for express config
 const publicDirectoryPath = path.join(__dirname, '../public');
 
 app.use(express.static(publicDirectoryPath));
 
+// Setting up socket
 io.on('connection', (socket) => { 
     console.log('New websocket connection');
 
@@ -40,6 +41,7 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (text, callback) => {
         const {user} = getUser(socket.id);
 
+        // Check for inappropriate language
         const filter = new Filter();
         if(filter.isProfane(text))
         {
@@ -54,7 +56,6 @@ io.on('connection', (socket) => {
 
         const {user} = getUser(socket.id);
 
-        //io.emit('message', `https://google.com/maps?q=${location.latitude},${location.longitude}`);
         io.to(user.room).emit('sendLocationMessage', getLocationMessage(user.username, `https://google.com/maps?q=${location.latitude},${location.longitude}`));
         callback('Location shared!');
     })
